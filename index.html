@@ -1,156 +1,506 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ORANG GANTENG</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+<meta charset="UTF-8">
+<title>Dika - Payment & Portfolio</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f7f8fa;
+  --bg-2:#ffffff;
+  --text:#111827;
+  --muted:#4b5563;
+  --glass:rgba(255,255,255,.55);
+  --border:rgba(0,0,0,.06);
+  --shadow:rgba(0,0,0,.04);
+  --brand:linear-gradient(135deg,#3b82f6,#8b5cf6,#06b6d4);
+}
+[data-theme="dark"]{
+  --bg:#000000;
+  --bg-2:#0f0f12;
+  --text:#fafafa;
+  --muted:#a1a1aa;
+  --glass:rgba(20,20,22,.55);
+  --border:rgba(255,255,255,.12);
+  --shadow:rgba(0,0,0,.25);
+}
+*{box-sizing:border-box;margin:0;padding:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+body{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:var(--bg);
+  color:var(--text);
+  transition:.3s;
+  overflow:hidden;
+}
+/* Scrollable sections */
+.scrollable{
+  max-height:70vh;
+  overflow-y:auto;
+  padding-right:8px;
+}
+.scrollable::-webkit-scrollbar{width:4px}
+.scrollable::-webkit-scrollbar-thumb{background:var(--brand);border-radius:4px}
 
-    body {
-      margin: 0;
-      padding: 30px 15px;
-      font-family: 'Share Tech Mono', monospace;
-      background: #000;
-      color: #00ff99;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
-      background-image: linear-gradient(to bottom, #000000, #001a00);
-      animation: matrixScroll 30s linear infinite;
-    }
+/* Combined toggle switch */
+.theme-music-toggle{
+  position:fixed;
+  top:24px;
+  right:24px;
+  z-index:1000;
+  display:flex;
+  align-items:center;
+  background:var(--glass);
+  border:1px solid var(--border);
+  border-radius:30px;
+  padding:4px;
+  backdrop-filter:blur(10px);
+}
+.toggle-btn{
+  width:40px;
+  height:40px;
+  border:none;
+  border-radius:50%;
+  cursor:pointer;
+  transition:all .3s ease;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:16px;
+}
+.music-btn{
+  background:transparent;
+  color:var(--text);
+}
+.theme-btn{
+  background:var(--glass);
+  color:var(--text);
+  margin-left:4px;
+}
+[data-theme="dark"] .theme-btn{
+  background:var(--glass);
+}
+.bg-grad{
+  position:fixed;
+  inset:0;
+  z-index:-2;
+  background:var(--brand);
+  filter:blur(120px);
+  opacity:.22;
+  animation:shift 20s ease-in-out infinite;
+}
+@keyframes shift{
+  0%{transform:rotate(0deg) scale(1)}
+  50%{transform:rotate(180deg) scale(1.2)}
+  100%{transform:rotate(360deg) scale(1)}
+}
+.container{
+  width:100%;
+  max-width:420px;
+  padding:24px;
+  text-align:center;
+}
+.page{display:none;animation:fade .4s ease}
+.page.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.logo{
+  width:120px;
+  height:120px;
+  border-radius:50%;
+  object-fit:cover;
+  box-shadow:0 12px 32px var(--shadow);
+  animation:float 6s ease-in-out infinite;
+  margin:0 auto 20px;
+}
+@keyframes float{0%{transform:translateY(0)}50%{transform:translateY(-8px)}100%{transform:translateY(0)}}
+h1{font-size:26px;font-weight:600;margin-bottom:8px;background:var(--brand);-webkit-background-clip:text;background-clip:text;color:transparent}
+p{color:var(--muted);margin-bottom:28px;font-size:15px}
+.btn,.product-btn{
+  flex:1;
+  padding:14px 28px;
+  border:none;
+  border-radius:16px;
+  font-weight:600;
+  background:var(--brand);
+  color:#fff;
+  cursor:pointer;
+  transition:transform .2s;
+}
+.btn:hover{transform:translateY(-2px)}
+.btn:active{transform:translateY(0)}
+.glass-card{
+  background:var(--glass);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:24px;
+  backdrop-filter:blur(20px);
+  margin-bottom:20px;
+}
+.qr{width:100%;max-width:240px;border-radius:16px;margin-bottom:12px}
+.copy-row{display:flex;align-items:center;gap:12px;text-align:left}
+.copy-row .logo-sm{width:60px;height:60px;object-fit:contain;border-radius:14px;background:#fff}
+.copy-row .flex-col{flex:1;display:flex;flex-direction:column}
+.copy-row .title{font-weight:600;font-size:16px;line-height:1}
+.copy-row .number{font-weight:600;font-size:16px;color:var(--muted)}
+.copy-btn{background:transparent;border:none;color:var(--muted);cursor:pointer;padding:4px 8px;transition:color .2s}
+.copy-btn:hover{color:var(--text)}
+.toast{
+  position:fixed;bottom:24px;left:50%;transform:translate(-50%,0) scale(0);
+  background:var(--brand);color:#fff;padding:12px 20px;border-radius:12px;font-size:14px;transition:transform .3s;
+}
+.toast.show{transform:translate(-50%,0) scale(1)}
+.top-bar{display:flex;justify-content:space-between;margin-bottom:16px}
+.bottom-bar{display:flex;gap:12px;margin-top:24px;justify-content:center;align-items:center;flex-wrap:wrap}
+.anim-btn{padding:12px 20px;border-radius:12px;border:none;background:var(--brand);color:#fff;font-size:16px;cursor:pointer;transition:transform .2s}
+.anim-btn:hover{transform:scale(1.05)}
+.footer{margin-top:40px;font-size:14px;color:var(--muted)}
+.products-list{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  max-height:60vh;
+  overflow-y:auto;
+  padding-right:4px;
+}
+.products-list::-webkit-scrollbar{width:4px}
+.products-list::-webkit-scrollbar-thumb{background:var(--brand);border-radius:4px}
+.product-item{position:relative;width:100%}
+.product-button{
+width:100%;padding:20px;border:none;border-radius:16px;
+background:var(--glass);border:1px solid var(--border);color:var(--text);
+cursor:pointer;transition:all .3s ease;backdrop-filter:blur(10px);text-align:left;
+}
+.product-button:hover{transform:translateY(-2px);box-shadow:0 8px 25px var(--shadow);border-color:rgba(59,130,246,.3)}
+.product-info{display:flex;justify-content:space-between;align-items:center}
+.product-name{font-weight:600;font-size:16px;margin-bottom:4px}
+.product-price{font-size:14px;color:#3b82f6;font-weight:500}
+.product-benefit{font-size:13px;color:var(--muted);margin-top:4px}
+.product-detail{display:none;background:var(--glass);border:1px solid var(--border);
+border-radius:16px;padding:24px;margin-top:12px;backdrop-filter:blur(20px);animation:fade .3s ease}
+.product-detail.show{display:block}
+.product-detail h3{font-size:20px;margin-bottom:12px}
+.product-detail .price{font-size:18px;color:#3b82f6;font-weight:600;margin-bottom:8px}
+.product-detail .benefit-title{font-weight:600;margin:8px 0 4px}
+.product-detail .benefit{color:var(--muted);margin-bottom:20px;line-height:1.5}
+.buy-now-btn{width:100%;padding:16px;border:none;border-radius:16px;font-weight:600;font-size:16px;
+background:var(--brand);color:#fff;cursor:pointer;transition:transform .2s}
+.buy-now-btn:hover{transform:translateY(-2px)}
 
-    @keyframes matrixScroll {
-      from { background-position: 0 0; }
-      to { background-position: 0 1000px; }
-    }
+/* LIST PAGE */
+.list-card{background:var(--glass);border:1px solid var(--border);border-radius:20px;padding:20px;margin-bottom:16px}
+.list-card h3{color:#3b82f6;margin-bottom:8px;font-size:18px}
+.list-card ul{list-style:none;padding-left:0}
+.list-card li{background:transparent;border-bottom:1px solid var(--border);padding:8px 0;font-size:14px;color:var(--muted)}
+.list-card li:last-child{border-bottom:none}
 
-    h1 {
-      color: #00ffcc;
-      text-align: center;
-      font-size: 2.5em;
-      margin-bottom: 10px;
-    }
-
-    .thumbnail {
-      width: 160px;
-      height: 160px;
-      border-radius: 12px;
-      box-shadow: 0 0 20px #00ff99;
-      margin: 20px 0;
-    }
-
-    .section {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      width: 100%;
-      max-width: 350px;
-      margin-bottom: 40px;
-    }
-
-    .product-card {
-      background: rgba(0, 30, 0, 0.6);
-      border: 1px solid #00ff99;
-      border-radius: 12px;
-      padding: 15px;
-      box-shadow: 0 0 15px #004d26;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .product-card:hover {
-      background: rgba(0, 50, 0, 0.7);
-      transform: scale(1.03);
-    }
-
-    .product-title {
-      font-size: 1.1em;
-      font-weight: bold;
-      color: #00ffcc;
-    }
-
-    .price {
-      font-size: 0.95em;
-      margin: 6px 0;
-      color: #66ffcc;
-    }
-
-    .product-detail {
-      display: none;
-      margin-top: 8px;
-      font-size: 0.85em;
-      color: #99ffcc;
-      white-space: pre-line;
-    }
-
-    button {
-      background-color: #00ff99;
-      color: black;
-      border: none;
-      padding: 10px;
-      border-radius: 8px;
-      font-weight: bold;
-      font-family: inherit;
-      box-shadow: 0 0 10px #00ff99;
-      cursor: pointer;
-      transition: all 0.2s ease-in-out;
-    }
-
-    button:hover {
-      transform: scale(1.05);
-    }
-
-    hr {
-      width: 80%;
-      border: none;
-      height: 1px;
-      background-color: #004400;
-      margin: 30px 0;
-    }
-
-    .note {
-      color: #ccc;
-      font-size: 0.9em;
-      text-align: center;
-    }
-  </style>
+/* CONTACT PAGE */
+.contact-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:16px}
+.contact-card{
+  background:var(--glass);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:20px 12px;
+  text-align:center;
+  transition:transform .2s;
+  text-decoration:none;
+}
+.contact-card:hover{transform:translateY(-3px)}
+.contact-card img{
+  width:48px;
+  height:48px;
+  border-radius:50%;
+  object-fit:cover;
+  margin-bottom:8px;
+}
+.contact-card span{font-size:14px;font-weight:600;color:var(--text)}
+</style>
 </head>
 <body>
+<!-- Audio -->
+<audio id="bgMusic" loop>
+  <source src="https://cdn.jsdelivr.net/gh/NdikzDatabase/Database/Database/1756070821532-42ecvi.mpeg" type="audio/mpeg">
+</audio>
 
-  <h1>ORANG GANTENG</h1>
-  <img src="https://d.uguu.se/wazxPTUC.jpg" class="thumbnail" />
+<!-- Toggle Switch -->
+<div class="theme-music-toggle">
+  <button class="toggle-btn music-btn" id="musicBtn" title="Play/Pause">🎵</button>
+  <button class="toggle-btn theme-btn" id="themeBtn" title="Toggle Theme">☀️</button>
+</div>
 
-  <!-- QRIS & DUKUNGAN -->
-  <div class="section">
-    <button onclick="window.open('https://d.uguu.se/awkugSMN.jpg', '_blank')">REHAN</button>
-      <div class="section">
-    <button onclick="window.open('https://o.uguu.se/eZPkORwQ.jpg', '_blank')">SUFFY</button>
-      <div class="section">
-    <button onclick="window.open('https://n.uguu.se/BlxAVAam.jpg', '_blank')">PAHRI</button>
-    <div class="section">
-    <button onclick="window.open('https://h.uguu.se/NQgUaXwY.jpg', '_blank')">GUNTUR</button>
-      <div class="section">
-    <button onclick="window.open('https://d.uguu.se/kjmZPAfu.jpg', '_blank')">NAME?</button>
+<div class="bg-grad"></div>
+<div class="container">
+  <!-- HOME -->
+  <section id="home" class="page active" aria-label="Home">
+    <div class="glass-card">
+      <img src="https://files.catbox.moe/wvj6v0.jpg" alt="Logo Dika" class="logo">
+      <h1>ᴡᴇʟᴄᴏᴍᴇ<br>
+      
+    </div>
+    <div class="bottom-bar">
+      <button class="btn" onclick="toPage('payment')">☆ ᴘᴀʏᴍᴇɴᴛ ☆</button>
+      <button class="btn" onclick="toPage('products')">☆ ᴘʀᴏᴅᴜᴋ ☆</button>
+      <button class="btn" onclick="toPage('list')">☆ ꜱᴜᴘᴘᴏʀᴛ ☆</button>
+      <button class="btn" onclick="toPage('contact')">☆ ᴄᴏɴᴛᴀᴄᴛꜱ ☆</button>
+    </div>
+  </section>
 
-
-    <div class="product-card" onclick="toggleDetail(this)">
-      <div class="product-title">NOTE</div>
-      <div class="product-detail">
-ORANG GANTENG SEMUA 
-
+  <!-- PAYMENT -->
+  <section id="payment" class="page" aria-label="Payment">
+    <div class="top-bar">
+      <button class="anim-btn" onclick="toPage('home')">Kembali</button>
+    </div>
+    <div class="scrollable">
+      <h2>Qʀɪꜱ</h2>
+      <div style="text-align:center">
+        <img id="qris" src="https://files.catbox.moe/ylou09.jpg" alt="QRIS" class="qr">
+      </div>
+      <h2>Metode Lainnya</h2>
+      <div class="glass-card">
+        <div class="copy-row">
+          <img src="https://files.catbox.moe/xrwmfs.jpg" alt="DANA" class="logo-sm">
+          <div class="flex-col"><span class="title">DANA</span><span class="number">085810683665</span></div>
+          <button class="copy-btn" onclick="copyText('085810683665')">Salin</button>
+        </div>
+      </div>
+      <div class="glass-card">
+        <div class="copy-row">
+          <img src="https://files.catbox.moe/y27a5y.jpg" alt="GOPAY" class="logo-sm">
+          <div class="flex-col"><span class="title">GOPAY</span><span class="number">085810683665</span></div>
+          <button class="copy-btn" onclick="copyText('085810683665')">Salin</button>
+        </div>
       </div>
     </div>
-      
+    <div class="bottom-bar">
+      <button class="btn" onclick="toPage('products')">ʟɪꜱᴛ ᴘʀᴏᴅᴜᴋ</button>
+    </div>
+  </section>
 
-  <script>
-    function toggleDetail(card) {
-      const detail = card.querySelector('.product-detail');
-      detail.style.display = detail.style.display === 'block' ? 'none' : 'block';
-    }
-  </script>
+  <!-- PRODUCTS -->
+  <section id="products" class="page" aria-label="Products">
+    <div class="top-bar">
+      <button class="anim-btn" onclick="toPage('home')">Kembali</button>
+    </div>
+    <div class="scrollable">
+      <h2>ʟɪꜱᴛ ᴘʀᴏᴅᴜᴋ</h2>
+      <div class="products-list" id="productsContainer"></div>
+    </div>
+    <div class="bottom-bar">
+      <button class="btn" onclick="toPage('contact')">ᴏʀᴅᴇʀ</button>
+    </div>
+  </section>
 
-</body>
-      </html>
+  <!-- LIST PAGE -->
+  <section id="list" class="page" aria-label="List">
+    <div class="top-bar">
+      <button class="anim-btn" onclick="toPage('home')">Kembali</button>
+    </div>
+    <div class="scrollable">
+      <h2>ᴍʏ ꜱᴜᴘᴘᴏʀᴛ</h2>      
+      <div class="list-card">
+        <ul>
+          <li>ORTU<br>
+           <li>MY BABY<br>         
+        </ul>
+
+    </div>
+    </div>
+    <div class="bottom-bar">
+      <button class="btn" onclick="toPage('products')">ᴘʀᴏᴅᴜᴋ</button>
+    </div>
+  </section>
+
+  <!-- CONTACT PAGE -->
+  <section id="contact" class="page" aria-label="Contact">
+    <div class="top-bar">
+      <button class="anim-btn" onclick="toPage('home')">Kembali</button>
+    </div>
+    <h2>ᴄᴏɴᴛᴀᴄᴛꜱ ʟᴀɴᴢʏ</h2>
+    <div class="contact-grid">
+    
+      <a class="contact-card" href="https://wa.me/6285219535099">
+        <img src="https://img1.pixhost.to/images/8185/634294459_coganz.jpg" alt="WhatsApp">
+        <span>ᴡʜᴀᴛꜱᴀᴘᴘ¹</span>
         
+      <a class="contact-card" href="https://wa.me/6285814131938">
+        <img src="https://img1.pixhost.to/images/8185/634294459_coganz.jpg" alt="WhatsApp">
+        <span>ᴡʜᴀᴛꜱᴀᴘᴘ²</span>
+
+      <a class="contact-card" href="https://t.me/lanzsync">
+        <img src="https://img1.pixhost.to/images/8185/634294799_coganz.jpg" alt="Telegram">
+        <span>ᴛᴇʟᴇɢʀᴀᴍ</span>
+      </a>
+      <a class="contact-card" href="https://whatsapp.com/channel/0029VbAjmPmFy72LftTTFp0f">
+        <img src="https://img1.pixhost.to/images/8185/634294459_coganz.jpg" alt="WhatsApp Channel">
+        <span>ꜱᴀʟᴜʀᴀɴ</span>
+      </a>
+    </div>
+  </section>
+
+  <div class="footer">ʟᴀɴᴢʏ ᴏꜰꜰɪᴄɪᴀʟ</div>
+</div>
+<div id="toast" class="toast">Copied ✅</div>
+
+<script>
+/* === Audio untuk GitHub + Vercel === */
+// Cara menambahkan lagu:
+// 1. Upload file lagu.mp3 ke folder public/ di repository GitHub Anda
+// 2. Ganti src menjadi: src="https://your-domain.vercel.app/lagu.mp3"
+// 3. Pastikan file lagu.mp3 ada di root folder public/
+const music=document.getElementById('bgMusic');
+const musicBtn=document.getElementById('musicBtn');
+const themeBtn=document.getElementById('themeBtn');
+let isPlaying=false;
+
+musicBtn.addEventListener('click',()=>{
+  if(isPlaying){
+    music.pause();
+    musicBtn.textContent='🎵';
+  }else{
+    music.play().catch(()=>{alert('Browser mencegah autoplay. Klik lagi untuk memutar musik.')});
+    musicBtn.textContent='🔇';
+  }
+  isPlaying=!isPlaying;
+});
+
+/* === Theme Toggle === */
+const root=document.documentElement;const themeKey='kayzen-theme';
+function applyTheme(t){
+  root.setAttribute('data-theme',t);
+  localStorage.setItem(themeKey,t);
+  themeBtn.textContent=t==='dark'?'🌙':'☀️';
+}
+function toggleTheme(){
+  const current=root.getAttribute('data-theme');
+  const next=current==='dark'?'light':'dark';
+  applyTheme(next);
+}
+function initTheme(){
+  const saved=localStorage.getItem(themeKey);
+  const prefers=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
+  applyTheme(saved||prefers);
+}
+themeBtn.addEventListener('click',toggleTheme);
+initTheme();
+
+/* === Navigation === */
+function toPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.product-detail').forEach(d=>d.classList.remove('show'));
+}
+
+/* === Copy Clipboard === */
+function copyText(text){
+  navigator.clipboard.writeText(text).then(()=>{
+    const toast=document.getElementById('toast');
+    toast.textContent='Nomor disalin ✅';
+    toast.classList.add('show');
+    setTimeout(()=>toast.classList.remove('show'),2000);
+  });
+}
+
+/* === Render Products === */
+const products = [
+{name:"RESELLER TREDICT INVICTUS",price:"Rp 120.000",benefit:`
+• BISA JUAL SC TREDICT<br>
+• FREE UP PERMANENT<br>
+• JADI ADMIN CHANNEL<br>
+• FREE PANEL UNLI<br>
+`},
+
+{name:"RESELLER VOID XMOD",price:"Rp 150.000",benefit:`
+• BISA JUAL SC VOID<br>
+• FREE UP PERMANENT<br>
+• JADI ADMIN CHANNEL<br>
+• FREE PANEL UNLI<br>
+`},
+
+{name:"RESELLER NECRO LIGHT",price:"Rp 100.000",benefit:`
+• BISA JUAL SC NECRO<br>
+• FREE UP PERMANENT<br>
+• JADI ADMIN CHANNEL<br>
+• FREE PANEL UNLI<br>
+`},
+  
+{name:"RESELLER TRAVASDEX",price:"Rp 80.000",benefit:`
+• BISA JUAL SC TRAVASDEX<br>
+• FREE UP PERMANENT<br>
+• JADI ADMIN CHANNEL<br>
+• FREE PANEL UNLI<br>
+`},
+  
+{name:"RESELLER NIKA",price:"Rp 70.000",benefit:`  
+• BISA JUAL SC NIKA<br>
+• FREE UP PERMANENT<br>
+• JADI ADMIN CHANNEL<br>
+• FREE PANEL UNLI<br>
+`},
+  
+{name:"PATNER",price:"Rp50.000",benefit:`
+• GET FUNCTION<br>
+• GET BASE TELE / WA<br>
+• GET NO ENC TROMPY INFINITY<br>
+• GET SCRIPT JASEB NO ENC<br>
+• ADMIN CHANNEL<br>
+• GET MURID BAND WHATSAPP<br>
+• GET MURID UNBAN WHATSAPP<br>
+• GET MURID SUNTIK FOLLOWERS<br>
+`},
+  
+    {name:"OWNER",price:"Rp100.000",benefit:`
+• GET FUNCTION<br>
+• GET BASE<br>
+• GET NO ENC TROMPY INFINITY<br>
+• GET SCRIPT JASEB NO ENC<br>
+• ADMIN CHANNEL<br>
+• GET MURID BAND WHATSAPP<br>
+• GET MURID UNBAN WHATSAPP<br>
+• GET MURID SUNTIK FOLLOWERS<br>
+• GET MURID RENAME SC<br>
+• GET MURID RESET OTP<br>
+• GET MURID BEND TT<br>
+• GER MURID BAND IG<br>
+• GET MURID UP PAYMENT<br>
+• GET MURID DDOS VIA SC<br>
+• GET MURID NOENC/ENC SC<br>
+• GET MURID ADD DATABASE<br>
+• GET SCRIPT BUG TELE / WA<br>
+• GET SCRIPT MD TELE / WA<br>    
+`},
+
+];
+
+const productsContainer=document.getElementById('productsContainer');
+products.forEach((p,i)=>{
+  const productDiv=document.createElement('div');
+  productDiv.className='product-item';
+  productDiv.innerHTML=`
+    <button class="product-button" onclick="showProductDetail(${i})">
+      <div class="product-info">
+        <div><div class="product-name">${p.name}</div><div class="product-price">${p.price}</div></div>
+      </div>
+      <div class="product-benefit"><strong>Benefit:</strong><br>${p.benefit}</div>
+    </button>
+    <div class="product-detail" id="detail-${i}">
+      <h3>${p.name}</h3>
+      <div class="price">${p.price}</div>
+      <div class="benefit-title">Benefit:</div>
+      <div class="benefit">${p.benefit}</div>
+      <button class="buy-now-btn" onclick="buyNow()">Beli Sekarang</button>
+    </div>`;
+  productsContainer.appendChild(productDiv);
+});
+
+function showProductDetail(index){
+  document.querySelectorAll('.product-detail').forEach(d=>d.classList.remove('show'));
+  document.getElementById(`detail-${index}`).classList.add('show');
+}
+function buyNow(){toPage('payment');}
+</script>
+</body>
+  </html>
